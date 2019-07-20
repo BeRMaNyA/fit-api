@@ -1,11 +1,10 @@
 Garlix::App.router.define do
+  get '/test/:name', to: 'test#show'
+
   resources :users do
-    resources :contacts do
-      member do
-        post :hello
-        get :hello_test
-      end
-      resources :addresses
+    resource :avatar do
+      resources :comments
     end
   end
+  root to: 'test#index'
 end

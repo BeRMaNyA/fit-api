@@ -1,6 +1,5 @@
-require 'byebug'
+require 'bundler'
+require_relative 'config/setup'
 
-require_relative 'lib/garlix'
-require_relative 'config/routes'
-
+#run Garlix::App.new
 puts Garlix::App.router.to_s
