@@ -1,5 +1,5 @@
-require_relative 'parser'
-require_relative 'params'
+require 'fit_api/router/parser'
+require 'fit_api/router/params'
 
 module Garlix
   module Router

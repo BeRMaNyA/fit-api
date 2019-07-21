@@ -1,4 +1,4 @@
-require_relative 'router'
+require 'fit_api/router'
 
 module Garlix
   class App

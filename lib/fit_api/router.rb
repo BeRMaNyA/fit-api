@@ -1,4 +1,4 @@
-require_relative 'router/mapper'
+require 'fit_api/router/mapper'
 
 module Garlix
   module Router

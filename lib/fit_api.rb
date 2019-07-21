@@ -1,10 +1,10 @@
 require 'json/ext'
 require 'dry/inflector'
 
-require_relative 'garlix/app'
-require_relative 'garlix/controller'
+require 'fit_api/app'
+require 'fit_api/controller'
 
-module Garlix
+module FitApi
   class Halt < StandardError; end
 
   def self.inflector
