@@ -1,4 +1,4 @@
-module Garlix
+module FitApi
   class Controller
     attr_accessor :response
     attr_reader :request, :params, :headers

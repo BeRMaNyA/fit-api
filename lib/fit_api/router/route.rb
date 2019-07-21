@@ -1,7 +1,7 @@
 require 'fit_api/router/parser'
 require 'fit_api/router/params'
 
-module Garlix
+module FitApi
   module Router
     class Route
       attr_reader :verb, :path, :controller, :action
@@ -31,11 +31,6 @@ module Garlix
 
       private
 
-      def json_params
-
-
-
-      end
       def get_controller(options)
         return options[:controller] if options[:controller]
         options[:to].split('#').first

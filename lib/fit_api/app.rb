@@ -1,6 +1,6 @@
 require 'fit_api/router'
 
-module Garlix
+module FitApi
   class App
     def call(env)
       Router.call(env)

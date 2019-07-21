@@ -1,6 +1,6 @@
 require 'fit_api/router/route'
 
-module Garlix
+module FitApi
   module Router
     class Mapper
       attr_reader :routes
@@ -118,7 +118,7 @@ module Garlix
       end
 
       def singularize(word)
-        Garlix.inflector.singularize(word)
+        FitApi.inflector.singularize(word)
       end
     end
   end

@@ -1,6 +1,6 @@
 require 'fit_api/router/mapper'
 
-module Garlix
+module FitApi
   module Router
     def self.call(env)
       route = find env['REQUEST_METHOD'], env['PATH_INFO']

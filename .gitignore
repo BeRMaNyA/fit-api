@@ -1,2 +1,5 @@
 .byebug_history
-log/
+*.swp
+Gemfile.lock
+/log
+/doc

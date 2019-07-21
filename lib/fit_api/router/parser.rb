@@ -1,4 +1,4 @@
-module Garlix
+module FitApi
   module Router
     class Parser
       attr_reader :params
