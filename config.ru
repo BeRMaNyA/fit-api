@@ -1,5 +1,7 @@
-require 'bundler'
 require_relative 'config/setup'
+require_relative 'config/routes'
 
-#run Garlix::App.new
-puts Garlix::App.router.to_s
+logger = Logger.new('log/app.log')
+use Rack::CommonLogger, logger
+
+run Garlix::App.new

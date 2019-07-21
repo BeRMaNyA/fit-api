@@ -1,10 +1,9 @@
-Garlix::App.router.define do
+Garlix::Router.define do
   get '/test/:name', to: 'test#show'
 
-  resources :users do
-    resource :avatar do
-      resources :comments
-    end
-  end
+  post '/test', to: 'test#create'
+
+  not_found 'test#error'
+
   root to: 'test#index'
 end
