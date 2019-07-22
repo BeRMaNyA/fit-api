@@ -1,7 +1,7 @@
 require File.expand_path("../lib/fit_api/version.rb", __FILE__)
-c
+
 Gem::Specification.new do |s|
-  s.name        = 'fit-api'
+  s.name        = 'fit_api'
   s.summary     = 'Lightweight framework for building APIs'
   s.description = 'fit-api is a Rack based framework for building JSON APIs'
   s.author      = 'Bernardo Castro'
@@ -11,10 +11,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
   s.files       = `git ls-files`.split("\n")
   s.test_files  = `git ls-files -- spec/*`.split("\n")
-
-  s.require_paths = ['lib']
   s.required_ruby_version = '>= 2.2.0'
-
   s.add_dependency 'rack', '~> 2.0'
   s.add_dependency 'dry-inflector', '~> 0.1'
 end

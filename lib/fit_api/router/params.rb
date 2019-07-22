@@ -32,15 +32,19 @@ module FitApi
       end
 
       def except(*blacklist)
-        {}.tap do |h|
-          (@hash.keys - blacklist).each { |k| h[k] = @hash[k] }
-        end
+        Params.new(
+          {}.tap do |h|
+            (@hash.keys - blacklist.map(&:to_s)).each { |k| h[k] = @hash[k] }
+          end
+        )
       end
 
       def permit(*whitelist)
-        {}.tap do |h|
-          (@hash.keys & whitelist).each { |k| h[k] = @hash[k] }
-        end
+        Params.new(
+          {}.tap do |h|
+            (@hash.keys & whitelist.map(&:to_s)).each { |k| h[k] = @hash[k] }
+          end
+        )
       end
     end
   end

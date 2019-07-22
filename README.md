@@ -45,7 +45,7 @@ This is a basic example showing how it works... you can check the demo app from 
 require 'fit_api'
 
 require_relative 'routes'
-require_relative 'controller'
+require_relative 'app_controller'
 
 Rack::Handler::WEBrick.run FitApi::App.new
 ```
@@ -60,7 +60,7 @@ FitApi::Router.define do
 end
 ```
 
-**controller.rb**
+**app_controller.rb**
 
 ```ruby
 class AppController < FitApi::Controller
@@ -168,7 +168,7 @@ end
 -----
 
 ```ruby
-namespace '/hello/world/', controller: :test do
+namespace '/hello/world', controller: :test do
   get :test
 end
 ```

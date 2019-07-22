@@ -42,7 +42,7 @@ module FitApi
 
       def namespace(path, options = {}, &block)
         @namespaces << fix_path(path)
-        if controller = options[:controller]
+        if controller = options[:controller] || path
           previous, @controller = @controller, controller
         end
         instance_eval &block
@@ -95,9 +95,9 @@ module FitApi
       end
 
       def get_path(type, resource)
-        return "/:#{singularize(@parent.last)}_id/#{resource}"              if type == :resources && parent_is?(:resources)
-        return "/:#{singularize(@parent.last)}_id/#{singularize(resource)}" if type == :resource  && parent_is?(:resources)
-        return "/#{singularize(resource)}"                                  if type == :resource  && parent_is?(:resource)
+        return "/:#{s(@parent.last)}_id/#{resource}"    if type == :resources && parent_is?(:resources)
+        return "/:#{s(@parent.last)}_id/#{s(resource)}" if type == :resource  && parent_is?(:resources)
+        return "/#{s(resource)}"                       if type == :resource  && parent_is?(:resource)
         return "/#{resource}"
       end
 
@@ -117,7 +117,7 @@ module FitApi
         end
       end
 
-      def singularize(word)
+      def s(word)
         FitApi.inflector.singularize(word)
       end
     end

@@ -3,24 +3,26 @@ require 'fit_api/router/mapper'
 module FitApi
   module Router
     def self.call(env)
-      route = find env['REQUEST_METHOD'], env['PATH_INFO']
+      method, path = env['REQUEST_METHOD'], env['PATH_INFO']
+      route = find method, path, path != '/'
 
       return route.invoke(env) if route
 
-      [ 404, { 'Content-Type' => 'application/json'}, [ { error: 'Not found' }.to_json ] ]
+      res = path == '/' ? { message: 'fit-api is working!' } : { error: 'action not found' }
+
+      [ res[:error] ? 404 : 200, { 'Content-Type' => 'application/json'}, [ res.to_json ] ]
     end
 
     def self.find(method, path, find_error = true)
-      route = mapper.routes[method.downcase].find do |route|
-        route.match? path
-      end
+      routes = mapper.routes[method.downcase]
+      route = routes.find { |route| route.match? path }
 
       return route if route
-      return not_found if find_error and not_found
-    end
 
-    def self.not_found
-      @not_found ||= find('get', '/404', false)
+      if find_error 
+        not_found = find('get', '/404', false)
+        return not_found if not_found
+      end
     end
 
     def self.define(&block)
