@@ -1,4 +1,6 @@
 module FitApi
+  class Halt < StandardError; end
+
   class Controller
     attr_accessor :response
     attr_reader :request, :params, :headers
