@@ -1,5 +1,6 @@
 .byebug_history
 *.swp
 Gemfile.lock
+/pkg
 /log
 /doc

@@ -4,8 +4,8 @@ Lightweight framework for building JSON API's
 
 ## Introduction
 
-fit-api is a 400 line dependency library based on Rack and inspired by Rails & Sinatra. 
-The goal of this library is to provide simplicity when developing an API with ruby.
+fit-api is a library based on Rack and inspired by Rails & Sinatra.  
+The goal of this gem is to provide simplicity when developing an API with ruby.
 
 ## Installation
 
@@ -28,41 +28,28 @@ $ gem install fit_api
         * [404](#customize-error-404-message)
     * [Controllers](#controllers)
         * [Request](#request)
+        * [Halt](#halt)
         * [Params](#params)
         * [Headers](#request-headers)
         * [Callbacks](#callbacks)
-    * [Rack Middlewares](#rack-middlewares)
 
 
 ## Usage
 
 This is a basic example showing how it works... you can check the demo app from this repository:
-[fit-api-demo](/bermanya/fit-api-demo)
+[fit-api-demo](http://github.com/bermanya/fit-api-demo)
 
-**my_app.rb**
+**api.rb**
 
 ```ruby
 require 'fit_api'
 
-require_relative 'routes'
-require_relative 'app_controller'
-
-Rack::Handler::WEBrick.run FitApi::App.new
-```
-
-**routes.rb**
-
-```ruby
 FitApi::Router.define do
   get '/:name', to: 'app#show'
 
   root to: 'app#index'
 end
-```
 
-**app_controller.rb**
-
-```ruby
 class AppController < FitApi::Controller
   def index
     json({ message: 'Hello world' })
@@ -72,15 +59,21 @@ class AppController < FitApi::Controller
     json({ message: "Welcome #{params.name}" })
   end
 end
+
+# You can setup any Rack Middleware
+
+FitApi.use Rack::CommonLogger, Logger.new('log/app.log')
+
+Rack::Handler::WEBrick.run FitApi.app
 ```
 
 ```bash
-ruby my_app.rb
+ruby api.rb
 ```
 
 ## Router
 
-It recognizes URLs and invoke the controller's action... the DSL is pretty similar to Rails (obviously not to so powerful):
+It recognizes URLs and invoke the controller's action... the DSL is pretty similar to Rails (obviously not so powerful):
 
 ### HTTP methods:
 
@@ -90,6 +83,8 @@ post '/test',       to: 'app#test_post'
 put '/test',        to: 'app#test_put'
 delete '/test/:id', to: 'app#test_delete'
 ```
+
+----
 
 ### Resources
 
@@ -208,12 +203,12 @@ root to: 'app#index'
 ### Customize error 404 message
 
 ```ruby
-not_found 'app#error_404'
+not_found to: 'app#error_404'
 ```
 
 ## Controllers
 
-The library provides one father class `FitApi::Controller` that should be inherited from your controllers.  
+The library provides one class `FitApi::Controller` which should be inherited from your controllers.  
 One limitation is the class name of your controller must end with "Controller", i.e: AppController, UsersController...
 
 ```ruby
@@ -228,46 +223,82 @@ class AppController < FitApi::Controller
 end 
 ```
 
-You have the method `#json` available, basically, it sets the Response body.
+You have the method `#json` available, which basically sets the response body.
+
+----
 
 ### Request
 
-You can access the Request object like this: `request`
+You can access the Request object like this:
+
+`request`
+
+----
+
+### Halt
+
+You can exit the current action throwing an exception... the default status code is 400
+
+```ruby
+halt
+halt 500
+halt 404, 'Not found'
+halt 'Error message'
+```
+
+----
 
 ### Params
 
-Assuming the following requests:
-
-**GET /users/:id?name=Berna&age=28&height=180**
-
-```ruby
-params.id           # 1
-params.name         # "Berna"
-params[:age]        # 28
-params['height']    # 180
-```
-
-**POST /test** 
-
-With Params:
+#### GET /users
 
 ```bash
-curl -i -X POST  -d 'user[name]=Berna&user[age]=28' http://server:1337/test
+curl -i http://localhost:1337/users/:id?name=Berna&age=28&height=180
 ```
-
-With JSON:
-
-```bash
-curl -i -X POST -H "Content-Type: application/json" -d '{ "user": { "name": "Berna", "age": 28 } }' http://server:1337/test
-```
-
-Then we have the following data in our `params` object:
 
 ```ruby
-params.user             # > Params
-params.user.name        # "Berna"
-params[:user][:age]     # 28
+params.id         # 1
+params.name       # "Berna"
+params[:age]      # 28
+params['height']  # 180
 ```
+
+#### POST with params:
+
+```bash
+curl -i -X POST  -d 'user[name]=Berna&user[age]=28' http://localhost:1337/users
+```
+
+#### POST with JSON:
+
+```bash
+curl -i -X POST -H "Content-Type: application/json" -d '{ "user": { "name": "Berna", "age": 28 } }' http://localhost:1337/users
+```
+
+Result:
+
+```ruby
+params.user.name     # "Berna"
+params[:user][:age]  # "28"
+```
+
+----
+
+#### #permit
+
+```ruby
+params.user.permit(:name, :age)
+```
+
+----
+
+#### #except
+
+```ruby
+params.user.except(:height)
+```
+
+----
 
 ### Request Headers
 
@@ -275,11 +306,15 @@ params[:user][:age]     # 28
 request.headers['Authorization']
 ```
 
+----
+
 ### Response Headers
 
 ```ruby
-headers['Header-Key'] = 'Header Value'
+headers['Header-Name'] = 'Header Value'
 ```
+
+----
 
 ### Callbacks
 
@@ -288,22 +323,8 @@ before_action *actions
 after_action *actions, only: %i(index show)
 ```
 
-## Rack Middlewares
-
-You can set up any rack middleware you want, i.e:
-
-**config.ru**
-
-```ruby
-require 'fit_api'
-
-use Rack::CommonLogger, Logger.new('log/app.log')
-
-run FitApi::App.new
-```
-
 ## TODO:
 - [ ] Implement tests
 - [ ] Allow websockets -> `FitApi::Controller#stream`
 
-Any contribution would be appreciated =)  
+Any contribution would be appreciated =)

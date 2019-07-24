@@ -28,7 +28,7 @@ module FitApi
         get '', to: to
       end
 
-      def not_found(to)
+      def not_found(to:)
         get '/404', to: to
       end
 
@@ -97,7 +97,7 @@ module FitApi
       def get_path(type, resource)
         return "/:#{s(@parent.last)}_id/#{resource}"    if type == :resources && parent_is?(:resources)
         return "/:#{s(@parent.last)}_id/#{s(resource)}" if type == :resource  && parent_is?(:resources)
-        return "/#{s(resource)}"                       if type == :resource  && parent_is?(:resource)
+        return "/#{s(resource)}"                        if type == :resource  && parent_is?(:resource)
         return "/#{resource}"
       end
 

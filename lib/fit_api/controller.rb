@@ -29,8 +29,8 @@ module FitApi
     end
 
     def set_response_headers
-      response.add_header 'Content-Type', 'application/json'
-      response.add_header 'Date', Rack::Utils.rfc2822(Time.now)
+      headers['Date'] = Rack::Utils.rfc2822(Time.now)
+      headers['Content-Type'] = 'application/json'
 
       headers.each &response.method(:add_header)
     end
@@ -38,11 +38,13 @@ module FitApi
     private
 
     def json(hash, status: 200)
-      self.response = 
-        Rack::Response.new(hash.to_json, status)
+      self.response = Rack::Response.new(hash.to_json, status)
     end
 
-    def halt(status = 400, error)
+    def halt(*args)
+      is_integer = args.first.is_a?(Integer)
+      status = is_integer ? args.first : 400
+      error = is_integer ? (args.count > 1 ? args.last : '') : args.first 
       json(error, status: status)
       raise Halt
     end
