@@ -18,7 +18,7 @@ module FitApi
         route_params = parse(request.path).params
         json_params  = JSON.parse(request.body.read) rescue {}
         params       = Params.new(request.params.merge(route_params).merge(json_params))
-        controller   = Object.const_get("#{@controller.capitalize}Controller").new(request, params)
+        controller   = Object.const_get("#{@controller.to_s.capitalize}Controller").new(request, params)
 
         run! controller
       rescue Halt

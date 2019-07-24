@@ -60,10 +60,12 @@ module FitApi
 
       def set_resource(type, resource, options, &block)
         options[:only] ||= %i(index show create update destroy)
+        options[:controller] ||= resource
+
         path = get_path(type, resource)
 
         @parent = [ type, resource ]
-        @controller = options[:controller] || resource
+        @controller = options[:controller] 
 
         namespace path, options do
           set_actions type, resource, options[:only]
@@ -110,11 +112,9 @@ module FitApi
       end
 
       def fix_path(path)
-        if path.is_a?(Symbol) || path[0] != '/' && path != ''
-          "/#{path}"
-        else
-          path
-        end
+        fix = path.is_a?(Symbol) || path[0] != '/' && path != ''
+        path = fix ? "/#{path}" : path
+        path.gsub(/\/$/, '')
       end
 
       def s(word)
