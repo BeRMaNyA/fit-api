@@ -33,7 +33,7 @@ module FitApi
       end
 
       def member(&block)
-        namespace '/:id', &block
+        namespace '/:id', controller: @controller, &block
       end
 
       def collection(&block)

@@ -179,12 +179,14 @@ end
 ```ruby
 controller :app do
   get :another_action
+  get '/welcome', action: 'hello_world'
 end
 ```
 
 |   Method   |         Path      |  Controller & action  |
 |------------|-------------------|-----------------------|
 |  **GET**   | /another_action   | app#another_action    |
+|  **GET**   | /welcome          | app#hello_world       |
 
 -----
 
