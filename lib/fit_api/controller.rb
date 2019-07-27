@@ -17,11 +17,12 @@ module FitApi
       end
 
       %i(before after).each do |callback_type|
-        define_method "#{callback_type}_action" do |*methods|
-          only = methods.last.is_a?(Hash) ? methods.last[:only] : nil
-          methods.each do |method|
+        define_method "#{callback_type}_action" do |*callbacks|
+          executable_actions = callbacks.last.is_a?(Hash) ? callbacks.last : {}
+
+          callbacks.each do |method|
             unless method.is_a?(Hash) 
-              actions[callback_type] << { method: method, only: only }
+              actions[callback_type] << { method: method }.merge(executable_actions)
             end
           end
         end
@@ -29,23 +30,22 @@ module FitApi
     end
 
     def set_response_headers
-      headers['Date'] = Rack::Utils.rfc2822(Time.now)
-      headers['Content-Type'] = 'application/json'
+      headers['Date'] ||= Rack::Utils.rfc2822(Time.now)
+      headers['Content-Type'] ||= 'application/json'
 
       headers.each &response.method(:add_header)
     end
 
-    private
-
-    def json(hash, status: 200)
-      self.response = Rack::Response.new(hash.to_json, status)
+    def json(hash, status = 200)
+      self.response = Rack::Response.new(JSON.pretty_generate(hash), status)
     end
 
     def halt(*args)
-      is_integer = args.first.is_a?(Integer)
-      status = is_integer ? args.first : 400
-      error = is_integer ? (args.count > 1 ? args.last : '') : args.first 
-      json(error, status: status)
+      is_int = args.first.is_a?(Integer)
+      status = is_int ? args.first : 400
+      error  = is_int ? (args.count > 1 ? args.last : '') : args.first
+
+      json(error, status)
       raise Halt
     end
   end
