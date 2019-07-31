@@ -12,14 +12,12 @@ module FitApi
         status = is_root ? 200 : 404
         res    = is_root ? 'fit-api is working!' : 'Action not found'
 
-        [ status, { 'Content-Type' => 'application/json'}, [ res.to_json ] ]
+        [ status, { 'Content-Type' => 'application/json' }, [ res.to_json ] ]
       end
     end
 
     def self.find(method, path, find_not_found_action = true)
-      routes = mapper.routes[method.downcase]
-      route = routes.find { |route| route.match? path }
-
+      route = mapper.routes[method.downcase].find { |route| route.match? path }
       return route if route
 
       if find_not_found_action

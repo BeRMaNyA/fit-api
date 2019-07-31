@@ -5,6 +5,10 @@ module FitApi
         @hash = hash
       end
 
+      def to_h
+        @hash
+      end
+
       def to_json
         @hash.to_json
       end

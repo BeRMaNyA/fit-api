@@ -22,7 +22,11 @@ module FitApi
 
         run! controller
       rescue Halt
+        controller.set_response_headers
         controller.response
+      rescue Exception => ex
+        error = { message: "#{ex.message} (#{ex.class})", backtrace: ex.backtrace }
+        controller.json(ENV['RACK_ENV'] == 'production' ? 'An error has occured' : error, 500)
       end
 
       def match?(path)
@@ -50,17 +54,27 @@ module FitApi
         run_callbacks! controller, :before
         controller.send action
         run_callbacks! controller, :after
-        controller.response
-      ensure
         controller.set_response_headers
+        controller.response
       end
 
       def run_callbacks!(controller, type)
-        controller.class.actions[type].each do |action|
-          if action[:only].nil? || action[:only].include?(@action.to_sym)
-            controller.send action[:method]
+        klass = controller.class
+
+        while klass != Object
+          actions = klass.actions[type].each do |rule|
+            controller.send(rule[:method]) if run?(rule)
           end
+          klass = klass.superclass
         end
+      end
+
+      def run?(rule)
+        except, only = rule[:except], rule[:only]
+
+        except && !except.map(&:to_s).include?(action) ||
+          only && only.map(&:to_s).include?(action) ||
+            !only && !except
       end
     end
 

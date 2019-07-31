@@ -88,6 +88,14 @@ delete '/test/:id', to: 'app#test_delete'
 
 ### Resources
 
+You can pass the following options:
+
+```
+only
+except
+controller
+```
+
 **Nested:**
 
 ```ruby
@@ -220,12 +228,14 @@ class AppController < FitApi::Controller
   end
   
   def process_post
-    json params 
+    json resource, 201
   end
 end 
 ```
 
-You have the method `#json` available, which basically sets the response body.
+You have the method `#json` available, which basically sets the response body.  
+
+Default status code: ```200```
 
 ----
 
@@ -321,8 +331,8 @@ headers['Header-Name'] = 'Header Value'
 ### Callbacks
 
 ```ruby
-before_action *actions
-after_action *actions, only: %i(index show)
+before_action *actions, only: %i(index show)
+after_action *actions, except: %i(destroy)
 ```
 
 ## TODO:

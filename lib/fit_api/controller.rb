@@ -36,8 +36,8 @@ module FitApi
       headers.each &response.method(:add_header)
     end
 
-    def json(hash, status = 200)
-      self.response = Rack::Response.new(JSON.pretty_generate(hash), status)
+    def json(object, status = 200)
+      self.response = Rack::Response.new(JSON.pretty_generate(object), status)
     end
 
     def halt(*args)

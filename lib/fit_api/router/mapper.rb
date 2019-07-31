@@ -59,20 +59,30 @@ module FitApi
       private
 
       def set_resource(type, resource, options, &block)
-        options[:only] ||= %i(index show create update destroy)
         options[:controller] ||= resource
-
         path = get_path(type, resource)
 
         @parent = [ type, resource ]
+        @previous = @controller
         @controller = options[:controller] 
 
         namespace path, options do
-          set_actions type, resource, options[:only]
+          set_actions type, resource, get_actions(options)
           instance_eval &block if block
         end
 
-        @parent, @controller = nil, nil
+        @parent, @previous, @controller = nil, nil, @previous
+      end
+
+      def get_actions(options)
+        actions = %i(index show create update destroy)
+        only    = options[:only]
+        except  = options[:except]
+ 
+        return actions & only   if only
+        return actions - except if except
+
+        actions
       end
 
       def set_actions(type, resource, actions)
