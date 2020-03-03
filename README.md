@@ -1,6 +1,6 @@
 # fit-api
 
-Lightweight framework for building JSON API's
+Lightweight framework for building JSON API"s
 
 ## Introduction
 
@@ -37,63 +37,61 @@ $ gem install fit_api
 ## Usage
 
 This is a basic example showing how it works... you can check the demo app from this repository:
-[fit-api-demo](http://github.com/bermanya/fit-api-demo)
+[fit-api-demo](http://github.com/bermanya/minesweeper-api)
 
 **api.rb**
 
 ```ruby
-require 'fit_api'
+# optional:
+FitApi::Router.auto_load_path "controllers"
 
 FitApi::Router.define do
-  get '/:name', to: 'app#show'
+  get "/:name", to: "app#show"
 
-  root to: 'app#index'
+  root to: "app#index"
 end
+```
 
+**controllers/app_controllers.rb**
+
+```
 class AppController < FitApi::Controller
   def index
-    json({ message: 'Hello world' })
+    json(message: "Hello world")
   end
   
   def show
-    json({ message: "Welcome #{params.name}" })
+    if found
+      json(message: "Welcome #{params.name}")
+    else
+      json(404, error: "not found")
+    end
   end
 end
-
-# You can setup any Rack Middleware
-
-FitApi.use Rack::CommonLogger, Logger.new('log/app.log')
-
-Rack::Handler::WEBrick.run FitApi.app
 ```
 
 ```bash
-ruby api.rb
+rackup
 ```
 
 ## Router
 
-It recognizes URLs and invoke the controller's action... the DSL is pretty similar to Rails (obviously not so powerful):
+It recognizes URLs and invoke the controller"s action... the DSL is pretty similar to Rails (obviously not so powerful):
 
 ### HTTP methods:
 
 ```ruby
-get '/test/:name',  to: 'app#test_show'
-post '/test',       to: 'app#test_post'
-put '/test',        to: 'app#test_put'
-delete '/test/:id', to: 'app#test_delete'
+get "/test/:name",  to: "app#test_show"
+post "/test",       to: "app#test_post"
+put "/test",        to: "app#test_put"
+delete "/test/:id", to: "app#test_delete"
 ```
 
 ----
 
 ### Resources
 
-You can pass the following options:
-
-```
-only
-except
-controller
+You can pass the following options: `only, except, controller`
 ```
 
 **Nested:**
@@ -133,7 +131,7 @@ end
 **Member & Collection:**
 
 ```ruby
-resources :contacts, only: %i(index) do
+resources :contacts, only: :index do
   member do
     post :add_activity
   end
@@ -171,14 +169,14 @@ end
 -----
 
 ```ruby
-namespace '/hello/world', controller: :test do
+namespace "/hello/world", controller: :test do
   get :test
 end
 ```
 
 |  Method  |         Path      |  Controller & action  |
 |----------|-------------------|-----------------------|
-|  **GET** | /test/world/test  | test#test             |
+|  **GET** | /hello/world/test  | test#test             |
 
 -----
 
@@ -187,7 +185,7 @@ end
 ```ruby
 controller :app do
   get :another_action
-  get '/welcome', action: 'hello_world'
+  get "/welcome", action: "hello_world"
 end
 ```
 
@@ -201,7 +199,7 @@ end
 ### Root
 
 ```ruby
-root to: 'app#index'
+root to: "app#index"
 ```
 
 |  Method  |  Path  |  Controller & action  |
@@ -213,7 +211,7 @@ root to: 'app#index'
 ### Customize error 404 message
 
 ```ruby
-not_found to: 'app#error_404'
+not_found to: "app#error_404"
 ```
 
 ## Controllers
@@ -224,16 +222,14 @@ One limitation is the class name of your controller must end with "Controller", 
 ```ruby
 class AppController < FitApi::Controller
   def index
-    json 'hello world'
+    json "hello world"
   end
   
-  def process_post
-    json resource, 201
+  def create
+    json 201, resource
   end
 end 
 ```
-
-You have the method `#json` available, which basically sets the response body.  
 
 Default status code: ```200```
 
@@ -254,8 +250,8 @@ You can exit the current action throwing an exception... the default status code
 ```ruby
 halt
 halt 500
-halt 404, 'Not found'
-halt 'Error message'
+halt 404, "Not found"
+halt "Error message"
 ```
 
 ----
@@ -265,33 +261,33 @@ halt 'Error message'
 #### GET /users
 
 ```bash
-curl -i http://localhost:1337/users/:id?name=Berna&age=28&height=180
+curl -i http://localhost:1337/users/:id?name=Berna&level=1&xp=70
 ```
 
 ```ruby
 params.id         # 1
 params.name       # "Berna"
-params[:age]      # 28
-params['height']  # 180
+params[:level]    # 1
+params["xp"]      # 70
 ```
 
 #### POST with params:
 
 ```bash
-curl -i -X POST  -d 'user[name]=Berna&user[age]=28' http://localhost:1337/users
+curl -i -X POST  -d "user[name]=Berna&user[level]=1" http://localhost:1337/users
 ```
 
 #### POST with JSON:
 
 ```bash
-curl -i -X POST -H "Content-Type: application/json" -d '{ "user": { "name": "Berna", "age": 28 } }' http://localhost:1337/users
+curl -i -X POST -H "Content-Type: application/json" -d "{ "user": { "name": "Berna", "xp": 50 } }" http://localhost:1337/users
 ```
 
 Result:
 
 ```ruby
 params.user.name     # "Berna"
-params[:user][:age]  # "28"
+params[:user][:xp]   # 50
 ```
 
 ----
@@ -299,7 +295,7 @@ params[:user][:age]  # "28"
 #### #permit
 
 ```ruby
-params.user.permit(:name, :age)
+params.user.permit(:name, :level, :xp)
 ```
 
 ----
@@ -315,7 +311,7 @@ params.user.except(:height)
 ### Request Headers
 
 ```ruby
-request.headers['Authorization']
+request.headers["Authorization"]
 ```
 
 ----
@@ -323,7 +319,7 @@ request.headers['Authorization']
 ### Response Headers
 
 ```ruby
-headers['Header-Name'] = 'Header Value'
+headers["Header-Name"] = "Header Value"
 ```
 
 ----
@@ -332,7 +328,7 @@ headers['Header-Name'] = 'Header Value'
 
 ```ruby
 before_action *actions, only: %i(index show)
-after_action *actions, except: %i(destroy)
+after_action *actions, except: :destroy
 ```
 
 ## TODO:

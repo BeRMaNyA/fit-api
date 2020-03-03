@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FitApi
   module Router
     class Parser
@@ -5,7 +7,7 @@ module FitApi
 
       def initialize(route, path)
         @route = route
-        @path  = path.gsub(/\/$/, '')
+        @path  = path.gsub(/\/$/, "")
         @match = false
         @params = {}
 
@@ -29,12 +31,12 @@ module FitApi
 
         params.each_index do |i|
           @params[params[i]] = 
-            result[i].match(/^\d+$/) ? result[i].to_i : URI.decode(result[i])
+            result[i].match(/^\d+$/) ? result[i].to_i : URI.decode_www_form_component(result[i])
         end
       end
 
       def regexp
-        @route.gsub(/\:\w+/, '([^\/]*)')
+        @route.gsub(/\:\w+/, "([^\/]*)")
       end
     end
   end

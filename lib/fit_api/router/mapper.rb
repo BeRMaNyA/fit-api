@@ -1,4 +1,6 @@
-require 'fit_api/router/route'
+# frozen_string_literal: true
+
+require "fit_api/router/route"
 
 module FitApi
   module Router
@@ -13,6 +15,7 @@ module FitApi
       %w(get post put delete patch).each do |verb|
         define_method verb do |path, options = {}|
           options[:controller] ||= @controller
+
           route = Route.new(verb, "#{@namespaces.join}#{fix_path(path)}", options)
           @routes[verb] << route
         end
@@ -25,15 +28,15 @@ module FitApi
       end
 
       def root(to:)
-        get '', to: to
+        get "", to: to
       end
 
       def not_found(to:)
-        get '/404', to: to
+        get "/404", to: to
       end
 
       def member(&block)
-        namespace '/:id', controller: @controller, &block
+        namespace "/:id", controller: @controller, &block
       end
 
       def collection(&block)
@@ -79,8 +82,8 @@ module FitApi
         only    = options[:only]
         except  = options[:except]
  
-        return actions & only   if only
-        return actions - except if except
+        return actions & Array(only)   if only
+        return actions - Array(except) if except
 
         actions
       end
@@ -93,9 +96,9 @@ module FitApi
         actions.each do |action|
           case action
           when :index
-            get '', to: "#{resource}#index"
+            get "", to: "#{resource}#index"
           when :create
-            post '', to: "#{resource}#create"
+            post "", to: "#{resource}#create"
           when :show
             get path, to: "#{resource}#show"
           when :update
@@ -118,13 +121,13 @@ module FitApi
       end
 
       def get_resource_path(type)
-        return type == :resources ? '/:id' : ''
+        return type == :resources ? "/:id" : ""
       end
 
       def fix_path(path)
-        fix = path.is_a?(Symbol) || path[0] != '/' && path != ''
+        fix = path.is_a?(Symbol) || path[0] != "/" && path != ""
         path = fix ? "/#{path}" : path
-        path.gsub(/\/$/, '')
+        path.gsub(/\/$/, "")
       end
 
       def s(word)

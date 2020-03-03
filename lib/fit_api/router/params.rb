@@ -1,54 +1,37 @@
+# frozen_string_literal: true
+
 module FitApi
   module Router 
-    class Params
-      def initialize(hash)
-        @hash = hash
-      end
-
-      def to_h
-        @hash
-      end
-
-      def to_json
-        @hash.to_json
-      end
-
+    module Params
       def [](key)
-        value = @hash[key.to_s]
-
+        value = super(key.to_s)
         if value.is_a?(Hash)
-          self.class.new(value) 
-        else
-          value
+          value.extend(Params)
         end
-      end
-
-      def []=(key, value)
-        @hash[key.to_s] = value
-      end
-
-      def method_missing(method_sym, *arguments, &block)
-        if @hash.include? method_sym.to_s
-          send('[]', method_sym.to_s)
-        else
-          nil
-        end
+        value
       end
 
       def except(*blacklist)
-        Params.new(
-          {}.tap do |h|
-            (@hash.keys - blacklist.map(&:to_s)).each { |k| h[k] = @hash[k] }
-          end
-        )
+        blacklist.map!(&:to_s)
+        build(keys - blacklist)
       end
 
       def permit(*whitelist)
-        Params.new(
-          {}.tap do |h|
-            (@hash.keys & whitelist.map(&:to_s)).each { |k| h[k] = @hash[k] }
-          end
-        )
+        whitelist.map!(&:to_s)
+        build(keys & whitelist)
+      end
+
+      private
+
+      def build(new_keys)
+        {}.tap do |h|
+          new_keys.each { |k| h[k] = self[k] }
+        end.extend(Params)
+      end
+
+      def method_missing(method_sym, *args, &block)
+        attr = self.key?(method_sym) ? method_sym : method_sym.to_s
+        self[attr]
       end
     end
   end

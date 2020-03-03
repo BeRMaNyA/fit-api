@@ -1,10 +1,12 @@
-require 'rack'
-require 'json/ext'
-require 'dry/inflector'
+# frozen_string_literal: true
 
-require 'fit_api/version'
-require 'fit_api/router'
-require 'fit_api/controller'
+require "rack"
+require "json/ext"
+require "dry/inflector"
+
+require "fit_api/version"
+require "fit_api/router"
+require "fit_api/controller"
 
 module FitApi
   def self.builder
