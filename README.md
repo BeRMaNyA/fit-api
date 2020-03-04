@@ -1,6 +1,6 @@
 # fit-api
 
-Lightweight framework for building JSON API"s
+Lightweight framework for building JSON API's
 
 ## Introduction
 
@@ -15,7 +15,7 @@ Install the latest version from RubyGems
 $ gem install fit_api
 ```
 
-## Table of Contents
+# Table of Contents
 
 * [fit-api](#fit-api)
     * [Table of Contents](#table-of-contents)
@@ -54,7 +54,7 @@ end
 
 **controllers/app_controllers.rb**
 
-```
+```ruby
 class AppController < FitApi::Controller
   def index
     json(message: "Hello world")
@@ -92,7 +92,6 @@ delete "/test/:id", to: "app#test_delete"
 ### Resources
 
 You can pass the following options: `only, except, controller`
-```
 
 **Nested:**
 
@@ -109,22 +108,22 @@ end
 
 |    Method   |        Path        |  Controller & action  |
 |-------------|--------------------|-----------------------|
-|  **GET**    | /users             | users#index           |
-|  **GET**    | /users/:id         | users#show            |
-|  **POST**   | /users             | users#create          |
-|  **PATCH**  | /users/:id         | users#update          |
-|  **DELETE** | /users/:id         | users#destroy         |
+|  `GET`      | `/users`           | `users#index`         |
+|  `GET`      | `/users/:id`       | `users#show`          |
+|  `POST`     | `/users`           | `users#create`        |
+|  `PATCH`    | `/users/:id`       | `users#update`        |
+|  `DELETE`   | `/users/:id`       | `users#destroy`       |
 
 **Endpoints for avatar:**
 
-|    Method   |                Path                |  Controller & action  |
-|-------------|------------------------------------|-----------------------|
-|  **GET**    | /users/:user_id/avatar             | avatar#show           |
-|  **POST**   | /users/:user_id/avatar             | avatar#create         |
-|  **PATCH**  | /users/:user_id/avatar             | avatar#update         |
-|  **DELETE** | /users/:user_id/avatar             | avatar#destroy        |
-|  **GET**    | /users/:user_id/avatar/comments    | avatar#comments       |
-|  **POST**   | /users/:user_id/avatar/add_comment | avatar#add_comment    |
+|    Method   |                Path                  |  Controller & action  |
+|-------------|--------------------------------------|-----------------------|
+|  `GET`      | `/users/:user_id/avatar`             | `avatar#show`         |
+|  `POST`     | `/users/:user_id/avatar`             | `avatar#create`       |
+|  `PATCH`    | `/users/:user_id/avatar`             | `avatar#update`       |
+|  `DELETE`   | `/users/:user_id/avatar`             | `avatar#destroy`      |
+|  `GET`      | `/users/:user_id/avatar/comments`    | `avatar#comments`     |
+|  `POST`     | `/users/:user_id/avatar/add_comment` | `avatar#add_comment`  |
 
 -----
 
@@ -142,11 +141,11 @@ resources :contacts, only: :index do
 end
 ```
 
-|    Method   |           Path             |  Controller & action  |
-|-------------|----------------------------|-----------------------|
-|  **GET**    | /contacts                  | contacts#index        |
-|  **GET**    | /contacts/search           | contacts#search       |
-|  **POST**   | /contacts/:id/add_activity | contacts#add_activity |
+|    Method   |           Path               |  Controller & action    |
+|-------------|------------------------------|-------------------------|
+|  `GET`      | `/contacts`                  | `contacts#index`        |
+|  `GET`      | `/contacts/search`           | `contacts#search`       |
+|  `POST`     | `/contacts/:id/add_activity` | `contacts#add_activity` |
 
 -----
 
@@ -161,10 +160,10 @@ namespace :test do
 end
 ```
 
-|   Method   |         Path       |  Controller & action  |
-|------------|--------------------|-----------------------|
-|  **GET**   | /test/hello_world  | test#hello_world      |
-|  **POST**  | /test/hello_world  | test#post_hello_world |
+|   Method   |         Path        |  Controller & action    |
+|------------|---------------------|-------------------------|
+|  `GET`     | `/test/hello_world` | `test#hello_world`      |
+|  `POST`    | `/test/hello_world` | `test#post_hello_world` |
 
 -----
 
@@ -191,8 +190,8 @@ end
 
 |   Method   |         Path      |  Controller & action  |
 |------------|-------------------|-----------------------|
-|  **GET**   | /another_action   | app#another_action    |
-|  **GET**   | /welcome          | app#hello_world       |
+|  `GET`     | `/another_action` | `app#another_action`  |
+|  `GET`     | `/welcome`        | `app#hello_world`     |
 
 -----
 
@@ -204,7 +203,7 @@ root to: "app#index"
 
 |  Method  |  Path  |  Controller & action  |
 |----------|--------|-----------------------|
-|  **GET** | /      | app#index             |
+|  `GET`   | `/`    | `app#index`           |
 
 -----
 
